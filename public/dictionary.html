@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dictionary</title>
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #dictionaryBox {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 350px;
+      height: 420px;
+      background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+      color: white;
+      border: 2px solid #00f2ff;
+      border-radius: 12px;
+      resize: both;
+      overflow: auto;
+      box-shadow: 0 0 15px #00f2ff;
+      z-index: 9999;
+    }
+
+    #dictionaryHeader {
+      background: #0f2027;
+      padding: 10px 15px;
+      font-weight: bold;
+      cursor: move;
+      user-select: none;
+      border-bottom: 1px solid #00f2ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #dictionaryHeader span {
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    #dictionaryContent {
+      padding: 15px;
+    }
+
+    #wordInput {
+      width: 85%;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      background: #222;
+      color: white;
+    }
+
+    #searchBtn {
+      background: #00f2ff;
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 15px;
+      transition: 0.3s;
+    }
+
+    #searchBtn:hover {
+      background: #0ff;
+      color: #000;
+    }
+
+  .copy-btn {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: none;
+  padding: 4px 12px 4px 15px;
+  border-radius: 1200px;
+  color: #ccc;
+  font-size: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.copy-btn:hover {
+  background-color: rgba(0, 242, 255, 0.12);
+  color: #00f2ff;
+}
+
+.copy-btn .icon {
+  position: absolute;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-btn .icon svg {
+  width: 14px;
+  height: 14px;
+  color: #aaa;
+}
+
+.copy-btn .icon .back {
+  transform: translate(1px, 1px);
+  opacity: 0.4;
+}
+
+.copy-tooltip {
+  display: none;
+  margin-left: 10px;
+  color: #00ff88;
+  font-size: 12px;
+  transition: opacity 0.3s ease;
+}
+
+  </style>
+</head>
+<body>
+  <div id="dictionaryBox">
+    <div id="dictionaryHeader">
+      📘 Dictionary
+      <span id="closeDictionary">✖</span>
+    </div>
+    <div id="dictionaryContent">
+      <input id="wordInput" type="text" placeholder="Enter a word..." />
+      <button id="searchBtn">Search</button>
+      <div id="dictionaryResult"></div>
+      <button id="copyDefinitionBtn">📋 Copy</button>
+    </div>
+  </div>
+  <script src="dictionary.js"></script>
+</body>
+</html>

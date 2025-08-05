@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile</title>
+</head>
+<body style="background: #000; font-family: sans-serif; color: white; padding: 50px;">
+
+<!-- Back Button -->
+<div style="max-width: 400px; margin: auto; margin-bottom: 20px;">
+  <button onclick="history.back()" style="background: #444; color: #fff; padding: 8px 15px; border: none; border-radius: 8px; cursor: pointer;">⬅ Back</button>
+</div>
+
+<div id="user-profile" style="padding: 20px; background: #111; color: #fff; border-radius: 12px; max-width: 400px; margin: auto;">
+  <h2 style="text-align: center;">👤 My Profile</h2>
+
+  <div style="text-align: center;">
+    <img id="profile-pic-preview" src="/uploads/default.png" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #555;" />
+  </div>
+
+  <form id="upload-form" enctype="multipart/form-data" style="margin-top: 15px;">
+    <label style="color: #ccc;">Change Profile Picture:</label>
+    <input type="file" name="profilePic" accept="image/*" required>
+    <input type="hidden" id="pic-user-id" name="userId">
+    <button type="submit" style="margin-top: 10px; background: #0af; color: white; padding: 8px 15px; border: none; border-radius: 8px;">Upload</button>
+  </form>
+
+  <hr style="margin: 20px 0; border-color: #333;">
+
+  <form id="name-form">
+    <label style="color: #ccc;">Change Name:</label>
+    <input type="text" id="name-input" name="name" placeholder="Enter new name" required style="width: 100%; padding: 8px; margin-top: 5px;">
+    <input type="hidden" id="name-user-id" name="userId">
+    <button type="submit" style="margin-top: 10px; background: #0af; color: white; padding: 8px 15px; border: none; border-radius: 8px;">Change</button>
+  </form>
+</div>
+
+<script>
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  const userId = user.userId || user._id || "1234567890abcdef12345678";
+
+  // Set userId in form hidden inputs
+  document.getElementById("pic-user-id").value = userId;
+  document.getElementById("name-user-id").value = userId;
+
+  // Load user profile
+  fetch("/api/user/" + userId)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("profile-pic-preview").src = data.profilePic || "/uploads/default.png";
+      document.getElementById("name-input").value = data.name || "";
+    });
+
+  // Upload profile picture
+  document.getElementById("upload-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    try {
+      const res = await fetch("/api/user/upload-profile-pic", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      if (data.url || data.profilePic) {
+        const picUrl = data.profilePic || data.url;
+
+        document.getElementById("profile-pic-preview").src = picUrl;
+        alert("✅ Profile picture updated!");
+
+        // Update localStorage
+        user.profilePic = picUrl;
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("❌ Failed to upload profile picture.");
+    }
+  });
+
+  // Change Name
+  document.getElementById("name-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const name = document.getElementById("name-input").value;
+
+    try {
+      const res = await fetch("/api/user/update-name", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, userId })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Name updated to: " + data.user.name);
+
+        user.name = data.user.name;
+        localStorage.setItem("user", JSON.stringify(user));
+      } else {
+        alert("❌ Failed to update name.");
+      }
+    } catch (err) {
+      console.error("Name update error:", err);
+    }
+
+    // After successful update
+const updated = await fetch("/api/user/by-email/" + user.email).then(res => res.json());
+localStorage.setItem("user", JSON.stringify(updated));
+
+  });
+</script>
+</body>
+</html>

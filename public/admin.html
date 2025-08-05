@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #000000, #1a1a1a);
+      color: white;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .sidebar {
+      background-color: #1e1e1e;
+      padding: 20px;
+      height: 100vh;
+      position: fixed;
+      width: 250px;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+    }
+    .sidebar h4 {
+      margin-bottom: 30px;
+    }
+    .sidebar .nav-link {
+      color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #333;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+    .sidebar .nav-link:hover {
+      background-color: #444;
+    }
+    .main-content {
+      margin-left: 270px;
+      padding: 30px;
+    }
+    .card {
+      background-color: #222;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #ff416c;
+    }
+    .btn-glow {
+      background: #ff416c;
+      border: none;
+      color: white;
+      box-shadow: 0 0 10px #ff416c;
+      transition: all 0.3s ease;
+    }
+    .btn-glow:hover {
+      box-shadow: 0 0 20px #ff416c;
+      transform: scale(1.05);
+    }
+    table {
+      color: white;
+    }
+    .table thead {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h4>👑 Admin Panel</h4>
+    <a href="#" class="nav-link" onclick="showSection('dashboard')">📊 Dashboard</a>
+    <a href="#" class="nav-link" onclick="showSection('users')">👥 Manage Users</a>
+    <a href="#" class="nav-link" onclick="showSection('reports')">🚨 Reported Messages</a>
+    <a href="#" class="nav-link" onclick="showSection('settings')">⚙️ Settings</a>
+    <a href="index.html" class="nav-link mt-4">← Back to Chat</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Dashboard Summary -->
+    <div id="dashboard" class="section">
+      <h2>Dashboard Summary</h2>
+      <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+          <div class="card p-3">
+            <h5>Total Users</h5>
+            <p id="userCount">Loading...</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card p-3">
+            <h5>Total Messages</h5>
+            <p id="messageCount">Loading...</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card p-3">
+            <h5>Reported Messages</h5>
+            <p id="reportCount">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manage Users -->
+    <div id="users" class="section" style="display: none;">
+      <h2>Manage Users</h2>
+      <table class="table mt-3">
+        <thead>
+          <tr>
+            <th>Name</th><th>Email</th><th>Role</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- Dynamically inserted -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Reported Messages -->
+    <div id="reports" class="section" style="display: none;">
+      <h2>Reported Messages</h2>
+      <p class="text-muted">Feature under development. This will show flagged messages from users.</p>
+    </div>
+
+    <!-- Settings -->
+    <div id="settings" class="section" style="display: none;">
+      <h2>System Settings</h2>
+      <p class="text-muted">Feature under development. Admin can configure roles, limits, and themes here.</p>
+    </div>
+  </div>
+
+  <!-- Admin JS -->
+  <script>
+    const userCount = document.getElementById("userCount");
+    const messageCount = document.getElementById("messageCount");
+    const reportCount = document.getElementById("reportCount");
+
+    // Change section display
+    function showSection(id) {
+      document.querySelectorAll(".section").forEach(section => section.style.display = "none");
+      document.getElementById(id).style.display = "block";
+    }
+
+    // Load dashboard stats (mocked)
+    function loadDashboardStats() {
+      // These would be replaced with API calls in real app
+      userCount.innerText = "23";
+      messageCount.innerText = "156";
+      reportCount.innerText = "3";
+    }
+
+    // Load users (static demo)
+    function loadUsers() {
+      const users = [
+        { name: "Sharjeel", email: "sharjeelnorani@gmail.com", role: "admin" },
+        { name: "Ali", email: "ali123@gmail.com", role: "user" },
+        { name: "Fatima", email: "fatima88@gmail.com", role: "user" }
+      ];
+      const tableBody = document.getElementById("userTableBody");
+      tableBody.innerHTML = "";
+      users.forEach((u, i) => {
+        tableBody.innerHTML += `
+          <tr>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td>${u.role}</td>
+            <td>
+              <button class="btn btn-sm btn-glow" onclick="changeRole(${i})">Toggle Role</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteUser(${i})">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function changeRole(index) {
+      alert("Toggle role functionality will be added via backend.");
+    }
+
+    function deleteUser(index) {
+      alert("Delete functionality will be added via backend.");
+    }
+
+    // Init
+    window.onload = () => {
+      loadDashboardStats();
+      loadUsers();
+    };
+  </script>
+</body>
+</html>

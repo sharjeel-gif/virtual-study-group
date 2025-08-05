@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notepad</title>
+  <link rel="stylesheet" href="notepad.css">
+  <style>
+    
+    body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: transparent;
+}
+#notepadModal {
+  resize: none; /* Disable native resize */
+  position: fixed;
+  top: 20%;
+  left: 30%;
+  width: 500px;
+  height: 400px;
+  background: white;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  border-radius: 12px;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+
+#notepadHeader {
+  background: #0f2027;
+  padding: 10px 15px;
+  font-weight: bold;
+  cursor: move;
+  user-select: none;
+  border-bottom: 1px solid #00f2ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+
+#closeNotepadBtn {
+  cursor: pointer;
+  font-size: 22px;
+  color: #fff;
+}
+
+#notepadContent {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 45px);
+}
+
+#noteArea {
+  flex: 1;
+  resize: none;
+  padding: 10px;
+  font-size: 14px;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.notepad-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copy-btn, .save-btn {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: none;
+  padding: 6px 14px;
+  border-radius: 25px;
+  color: #ccc;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.copy-btn:hover, .save-btn:hover {
+  background-color: rgba(0, 242, 255, 0.15);
+  color: #00f2ff;
+}
+
+.copy-btn .icon, .save-btn .icon {
+  margin-right: 6px;
+}
+
+#openFileInput {
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.tooltip {
+  display: none;
+  color: #00ff88;
+  font-size: 12px;
+  margin-top: 5px;
+}
+.resizer {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    background: #00f7ff;
+    z-index: 10000;
+  }
+
+  .resizer.top-left {
+    top: 0;
+    left: 0;
+    cursor: nwse-resize;
+  }
+
+  .resizer.top-right {
+    top: 0;
+    right: 0;
+    cursor: nesw-resize;
+  }
+
+  .resizer.bottom-left {
+    bottom: 0;
+    left: 0;
+    cursor: nesw-resize;
+  }
+
+  .resizer.bottom-right {
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
+  }
+
+  button {
+    background: #00f7ff;
+    color: black;
+    border: none;
+    padding: 6px 12px;
+    margin-left: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #00ccdd;
+  }
+  </style>
+</head>
+<body>
+  <div id="notepadModal">
+    <div id="notepadHeader">
+      📝 Notepad
+      <span id="closeNotepadBtn">×</span>
+    </div>
+    <div id="notepadContent">
+      <textarea id="noteArea" placeholder="Type your notes here..."></textarea>
+
+      <div class="notepad-actions">
+        <input type="file" id="openFileInput" accept=".txt">
+        <button id="saveNoteBtn" class="save-btn">
+          <span class="icon">💾</span> Save
+        </button>
+        <button id="copyNoteBtn" class="copy-btn">
+          <span class="icon">📋</span> Copy
+        </button>
+      </div>
+
+      <div class="tooltip" id="noteTooltip">Copied!</div>
+    </div>
+    <!-- Inside #notepadModal -->
+<div class="resizer top-left"></div>
+<div class="resizer top-right"></div>
+<div class="resizer bottom-left"></div>
+<div class="resizer bottom-right"></div>
+
+  </div>
+
+  <script src="notepad.js"></script>
+</body>
+</html>

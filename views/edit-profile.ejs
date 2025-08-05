@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Profile</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      background: #0a0a0a;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    .profile-container {
+      background: linear-gradient(145deg, #111, #222);
+      border: 1px solid cyan;
+      border-radius: 14px;
+      padding: 20px;
+      width: 350px;
+      margin: auto;
+      box-shadow: 0 8px 20px rgba(0,255,255,0.4);
+    }
+    img {
+      border-radius: 50%;
+      border: 2px solid cyan;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      margin-bottom: 15px;
+      box-shadow: 0 0 20px cyan;
+    }
+    input, button {
+      margin: 10px 0;
+      padding: 8px;
+      width: 100%;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+    input[type="file"] {
+      background: none;
+      color: white;
+    }
+    .btn-save {
+      background: cyan;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-save:hover {
+      background: #00e6e6;
+    }
+    .btn-back {
+      background: #444;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="profile-container">
+  <h2>Edit Profile</h2>
+  <form action="/upload-profile" method="POST" enctype="multipart/form-data">
+    <img id="previewPic" src="/default-avatar.png" alt="Profile Picture">
+    <br>
+    <input type="file" name="profilePic" accept="image/*" onchange="previewImage(event)">
+    <br>
+    <input type="text" name="name" id="nameInput" placeholder="Enter your name">
+    <br>
+    <button type="submit" class="btn-save">💾 Save Changes</button>
+    <button type="button" class="btn-back" onclick="window.location.href='/'">⬅ Back</button>
+  </form>
+</div>
+
+<script>
+  // Preview selected image instantly
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+      document.getElementById('previewPic').src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+  }
+
+  // Load current user details
+  fetch("/api/user")
+    .then(res => res.json())
+    .then(data => {
+      if (data.name) {
+        document.getElementById("nameInput").value = data.name;
+        document.getElementById("previewPic").src = data.picture || "/default-avatar.png";
+      }
+    })
+    .catch(err => console.error("Error loading profile:", err));
+</script>
+
+</body>
+</html>

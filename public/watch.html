@@ -1,0 +1,66 @@
+<!-- watch.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glowing Cylinder Watch</title>
+  <link rel="stylesheet" href="watch.css" />
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(#000, #111);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #watchContainer {
+      background: linear-gradient(145deg, #0f0f0f, #1c1c1c);
+      padding: 30px;
+      border-radius: 40px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+      border: 2px solid rgba(0, 255, 255, 0.4);
+      text-align: center;
+      color: #0ff;
+      width: 300px;
+      position: relative;
+    }
+
+    #watchCylinder {
+      position: absolute;
+      top: -30px;
+      left: 100%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 30px;
+      background: #0ff;
+      border-radius: 50% 50% 0 0;
+      box-shadow: 0 0 20px #0ff, inset 0 0 10px #000;
+    }
+
+    #timeDisplay {
+      font-size: 2.8rem;
+      margin-top: 30px;
+      text-shadow: 0 0 8px #0ff;
+    }
+
+    #dateDisplay {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="watchContainer">
+    <div id="watchCylinder"></div>
+    <div id="timeDisplay">00:00:00</div>
+    <div id="dateDisplay">Loading...</div>
+  </div>
+
+  <script src="watch.js"></script>
+</body>
+</html>

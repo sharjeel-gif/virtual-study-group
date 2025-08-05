@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Study Group Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://meet.jit.si/external_api.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="index.css" />
+  
+</head>
+<body>
+<!-- ✅ Custom Navbar -->
+<div id="customNavbar" style="
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #000000, #111111);
+  padding: 16px 50px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  margin-bottom: 50px;
+">
+
+  <!-- Left -->
+    <div class="nav-left">
+      <span class="logo" style="color:#fff; font-size:20px; font-weight:bold;">Study HUB</span>
+    </div>
+
+  <div class="btn-container">
+  <button class="nav-btn active">Home</button>
+  <button class="nav-btn">About</button>
+  <button class="nav-btn">Contact</button>
+  <a class="nav-btn" href="/login">Login</a>
+  <a class="nav-btn" href="/signup">Sign Up</a>
+
+  <!-- Shooting star -->
+  <span class="shooting-star"></span>
+</div>
+
+
+  <div class="nav-right">
+      
+  <!-- Notification Button -->
+  <button id="notifBtn" class="icon-btn">
+    <i class="fas fa-bell"></i>
+    <span id="notifCount" class="badge">3</span> <!-- Example count -->
+  </button>
+
+  <!-- Notification Dropdown -->
+  <div id="notifDropdown" class="notif-dropdown">
+    <p><strong>Notifications</strong></p>
+    <ul>
+      <li>✉️ You have a new message</li>
+      <li>📂 File uploaded in your group</li>
+    </ul>
+  </div>
+
+  
+  <!-- Profile Pic in Navbar -->
+<img src="/default-avatar.png" id="profileToggle" alt="Profile"
+     style="width:40px; height:40px; border-radius:50%; border:2px solid cyan; cursor:pointer; object-fit:cover; box-shadow:0 0 15px cyan; transition:0.3s;">
+
+<!-- 3D Black Neon Dropdown -->
+<div id="profilePanel" style="
+  display:none;
+  position:absolute;
+  top:70px;
+  right:20px;
+  background:linear-gradient(145deg, #0a0a0a, #1a1a1a);
+  border:1px solid cyan;
+  border-radius:14px;
+  padding:14px;
+  width:220px;
+  z-index:10000;
+  box-shadow:0 8px 20px rgba(0,255,255,0.4), inset 0 0 15px rgba(0,255,255,0.15);
+  transform-origin:top right;
+  font-family:'Segoe UI',sans-serif;
+  overflow:hidden;
+">
+  <div style="text-align:center;">
+    <img id="profilePicBig" src="/default-avatar.png" style="width:65px; height:65px; border-radius:50%; border:2px solid cyan; margin-bottom:8px; box-shadow:0 0 20px cyan;">
+    <h6 id="profileName" style="color:#0ff; margin:0; font-weight:bold;">Loading...</h6>
+    <small id="profileEmail" style="color:#aaa;">Loading...</small>
+  </div>
+  <hr style="border-color:cyan; opacity:0.3;">
+
+  <button class="profile-btn3d btn-info" onclick="window.location.href='/edit-profile'">✏️ Edit Profile</button>
+  <button class="profile-btn3d btn-secondary" disabled>⚙️ Settings</button>
+  <button class="profile-btn3d btn-primary" onclick="window.location.href='/my-groups'">👥 My Groups</button>
+  <button class="profile-btn3d btn-danger" onclick="window.location.href='/logout'">🚪 Logout</button>
+</div>
+
+<style>
+/* Button 3D Style */
+.profile-btn3d {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(145deg, #0d0d0d, #1e1e1e);
+  box-shadow: 0 4px 8px rgba(0,255,255,0.3), inset 0 0 8px rgba(255,255,255,0.05);
+  transition: 0.2s ease-in-out;
+}
+.profile-btn3d:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 12px rgba(0,255,255,0.5), 0 0 15px cyan;
+  background: linear-gradient(145deg, #111, #222);
+  cursor: pointer;
+}
+
+/* Neon Folding Animation */
+#profilePanel.open {
+  animation: foldDownNeon 0.4s ease-out forwards;
+}
+#profilePanel.closing {
+  animation: foldUpNeon 0.4s ease-in forwards;
+}
+@keyframes foldDownNeon {
+  0% {opacity:0; transform:scaleY(0.2) translateY(-10px);}
+  60% {opacity:1; transform:scaleY(1.05) translateY(0);}
+  100% {opacity:1; transform:scaleY(1) translateY(0);}
+}
+@keyframes foldUpNeon {
+  0% {opacity:1; transform:scaleY(1) translateY(0);}
+  100% {opacity:0; transform:scaleY(0.2) translateY(-10px);}
+}
+</style>
+
+</div>
+</div>
+</div>
+
+
+<div class="container container-main">
+  <div class="row">
+    <div class="sidebar">
+      
+
+      <h5 class="text-white">Online Users</h5>
+      <ul id="onlineUsers"></ul>
+      <hr class="bg-light" />
+      <button id="menuToggle" class="btn w-100 mb-3">Menu</button>
+
+<div id="menuItems">
+  <button class="sidebar-btn" id="openCalculatorBtn">Calculator</button>
+  <button class="sidebar-btn" id="openWhiteboardBtn">Whiteboard</button>
+  <button class="sidebar-btn" id="openDictionaryBtn">📘 Dictionary</button>
+  <button class="sidebar-btn" id="openNotepadBtn">📓 Notepad</button>
+  <!-- To-Do Button -->
+<!-- To-Do Button -->
+<button id="todoToggleBtn" class="sidebar-btn">📝 To-Do</button>
+</div>
+      <hr class="bg-light" />
+      <h5 class="text-white">🌐 Translate</h5>
+      <select id="languageSelect" class="form-select">
+        <option value="en">English</option>
+        <option value="ur">Urdu</option>
+        <option value="hi">Hindi</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+      </select>
+    </div>
+
+      <div id="pinnedMessage" style="display:none; background:#fff8dc; padding:8px; border-left: 4px solid orange; margin-bottom: 10px; border-radius: 6px; position: relative;">
+  <span id="unpinBtn" style="position: absolute; right: 8px; top: 4px; cursor: pointer; color: red;">❌</span>
+</div>
+
+    <div class="col-md-9">
+      <div class="mb-3 d-flex flex-wrap gap-2">
+  <input id="userName" class="form-control" placeholder="Your Name" readonly />
+  <input id="roomName" class="form-control" placeholder="Group Name" />
+  <div class="group-code-inline" style="display: flex; align-items: center; gap: 10px; position: relative;">
+  <input type="text" id="groupCode" class="form-control" maxlength="6" placeholder="Group Code" required />
+
+  
+  <div class="rule-wrap">
+    <div class="underline"></div>
+    <div class="code-bar" id="codeRules">
+      <span id="lengthRule">🔴 6 chars</span>
+      <span id="upperRule">🔴 1 uppercase</span>
+      <span id="numRule">🔴 1 number</span>
+      <span id="specialRule">🔴 1 special (@#$%&)</span>
+    </div>
+  </div>
+</div>
+
+
+
+  
+  <button id="startBtn" class="btn btn-primary mt-2">Join</button>
+  <button id="exitBtn">Exit</button>
+</div>
+
+
+       
+<!-- Top Action Bar (Initially Hidden) -->
+<div id="topActionBar" style="display: none;">
+  <button id="replyBtn" title="Reply">💬</button>
+  <button id="copyBtn" title="Copy">📋</button>
+  <button id="deleteBtn" title="Delete">🗑️</button>
+  <button id="moreOptionsBtn" title="More">⋯</button>
+</div>
+ 
+<!-- Hidden menu under 3-dots -->
+<div id="moreOptions" style="display: none; position: absolute; background: white; border: 1px solid #ccc; border-radius: 4px; z-index: 999;">
+  <button id="pinMsgBtn">📌 Pin</button>
+  <button id="detailMsgBtn">ℹ️ Details</button>
+</div>
+
+  
+
+
+<!-- ✅ Calculator Modal -->
+<div id="calculatorModal" style="
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  background: linear-gradient(145deg, #1a1a1a, #000000);
+  padding: 20px;
+  border-radius: 24px;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+  z-index: 9999;
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  cursor: move;
+">
+  <input id="calcDisplay" readonly style="
+    width: 100%;
+    height: 60px;
+    font-size: 1.6rem;
+    text-align: right;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    background: #111;
+    color: #0ff;
+    box-shadow: inset 0 0 10px #0ff;
+    outline: none;
+  ">
+
+  <div id="calcButtons" style="
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  "></div>
+
+  <button id="closeCalculatorBtn" style="
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #e74c3c;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+  ">Close</button>
+</div>
+
+
+<!-- Whiteboard Modal -->
+<div id="whiteboardModal" style="
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  height: 85vh;
+  background: white;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  z-index: 9999;
+  border-radius: 12px;
+  overflow: hidden;
+">
+  <div id="whiteboardContent" style="height: 100%; display: flex; flex-direction: column;">
+    <!-- 🧠 Set iframe to fill most of modal, minus button height -->
+    <iframe src="whiteboard.html" style="flex: 1; border: none;"></iframe>
+    <button id="closeWhiteboardBtn" style="
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    ">Close</button>
+  </div>
+  </div>
+
+
+
+<!-- ✅ Dictionary Modal -->
+<div id="dictionaryModal" style="
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 350px;
+  background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+  z-index: 9999;
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  cursor: move;
+  resize: both;
+  overflow: auto;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+">
+  <div id="dictionaryHeader" style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    user-select: none;
+  ">
+    📘 Dictionary
+    <span id="closeDictionaryBtn" style="cursor: pointer; font-size: 18px;">✖</span>
+  </div>
+  <input id="wordInput" type="text" placeholder="Enter a word..." style="
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    background: #111;
+    color: white;
+    margin-bottom: 10px;
+    box-shadow: inset 0 0 5px #0ff;
+  " />
+  <button id="searchBtn" style="
+    width: 100%;
+    background: #00f2ff;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-bottom: 15px;
+  ">Search</button>
+  <div id="dictionaryResult" style="font-size: 14px; line-height: 1.6;"></div>
+ <div style="margin-top: 10px; display: flex; align-items: center;">
+  <button class="copy-btn" id="copyDefinitionBtn">
+    <span class="icon">
+      <svg class="back" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v16h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 18H8V7h11v16z"/>
+      </svg>
+    </span>
+    copy
+  </button>
+  <span id="copyTooltip" style="margin-left:10px; font-size: 12px; color: #0f0; display: none;">✔ Copied!</span>
+</div>
+</div>
+<!-- Notepad Modal -->
+<!-- 📒 Notepad Modal -->
+<div id="notepadModal" style="
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 400px;
+  background: #1e1e1e;
+  color: white;
+  z-index: 9999;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  resize: both;
+  overflow: hidden;
+">
+  <!-- 🔘 Header -->
+  <div id="notepadHeader" style="
+    background: #2c2c2c;
+    padding: 10px;
+    cursor: move;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  ">
+    Notepad
+    <span id="closeNotepadBtn" style="
+      cursor: pointer;
+      color: #ff5c5c;
+      font-size: 20px;
+      margin-left: 10px;
+    ">×</span>
+  </div>
+
+  <!-- 📝 Notepad Content -->
+  <div id="notepadContent" style="padding: 10px; height: calc(100% - 100px); display: flex; flex-direction: column;">
+    <textarea id="noteArea" placeholder="Type your notes here..." style="
+      flex: 1;
+      resize: none;
+      width: 100%;
+      background: #121212;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+    "></textarea>
+    
+    <!-- 📎 Buttons -->
+    <div style="margin-top: 10px; display: flex; justify-content: flex-start;">
+      <button id="openNoteBtn">📂 Open</button>
+      <button id="saveNoteBtn">💾 Save</button>
+      <button id="copyNoteBtn">📋 Copy</button>
+    </div>
+
+    <!-- 💾 Save Filename Box -->
+    <div id="saveFileBox" style="margin-top: 10px; display: none;">
+      <input type="text" id="fileNameInput" placeholder="Enter file name..." style="width: 60%; padding: 5px;">
+      <button id="confirmSaveBtn">Save</button>
+    </div>
+    
+    <div id="noteTooltip" style="opacity: 0; transition: opacity 0.3s ease; margin-top: 5px; color: #00ffcc;">Copied!</div>
+  </div>
+
+  <!-- 🔘 Resizers -->
+  <div class="resizer top-left"></div>
+  <div class="resizer top-right"></div>
+  <div class="resizer bottom-left"></div>
+  <div class="resizer bottom-right"></div>
+</div>
+
+
+
+
+<!-- Chat Display Area -->
+<div id="chatArea" class="mb-3"></div>
+
+
+<!-- ✅ Input Bar -->
+<div class="input-group mb-3">
+  <input id="msgInput" type="text" class="form-control" placeholder="Type your message..." />
+  <button id="sendBtn" class="btn btn-success">Send</button>
+  <input type="file" id="fileInput" class="form-control" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt" />
+  <button id="uploadBtn">Upload File</button>
+  <button id="micBtn" class="btn btn-dark">
+    <i class="bi bi-mic-fill"></i>
+  </button>
+  <button id="videoCallBtn" class="btn btn-warning" disabled>🎥</button>
+</div>
+
+<div id="video-container"></div>
+
+
+<!-- To-Do Popup Panel -->
+<div id="todoPanel">
+  <div class="todo-header" id="todoHeader">
+    <h3>📝 To-Do List</h3>
+    <button id="closeTodo" class="close-todo">✖</button>
+  </div>
+  <input id="todoInput" type="text" placeholder="Enter a task and press Enter" />
+  <ul id="todoItems"></ul>
+</div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://meet.jit.si/external_api.js"></script>
+<script src="index.js"></script>
+<!-- ✅ JS to Toggle Whiteboard -->
+<script>
+    const openWhiteboardBtn = document.getElementById("openWhiteboardBtn");
+    const whiteboardModal = document.getElementById("whiteboardModal");
+    const closeWhiteboardBtn = document.getElementById("closeWhiteboardBtn");
+
+    openWhiteboardBtn.onclick = () => {
+      whiteboardModal.style.display = "block";
+    };
+
+    closeWhiteboardBtn.onclick = () => {
+      whiteboardModal.style.display = "none";
+    };
+  </script>
+  <script src="Notepad.js" 
+
+  ></script>
+  <script src="calculator.js" ></script>
+   <script src="dictionary.js"></script>
+  <script src="watch.js"></script>
+
+  <script>
+  function toggleMenu() {
+    const navCenter = document.querySelector(".nav-center");
+    navCenter.classList.toggle("show");
+  }
+</script>
+<script>
+  document.getElementById('menuToggle').addEventListener('click', function () {
+    const menu = document.getElementById('menuItems');
+    menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+  });
+</script>
+ <script>
+window.addEventListener("message", event => {
+  if (event.data.type === "closeNotepadModal") {
+    document.getElementById("notepadModal").style.display = "none";
+  }
+});
+</script>
+
+
+<script>
+  // Example user object — replace with your real login data later
+  const user = {
+    name: "Sharjeel",
+    email: "sharjeelnorani@gmail.com",
+    role: "admin" // or "user"
+  };
+
+  // Show dashboard buttons
+  const dashboardBtns = document.getElementById("dashboardBtns");
+  if (dashboardBtns) dashboardBtns.style.display = "block";
+
+  // Conditionally show admin dashboard link
+  const adminBtn = document.getElementById("adminDashboardBtn");
+  if (adminBtn) {
+    if (user.role === "admin") {
+      adminBtn.style.display = "block";
+    } else {
+      adminBtn.style.display = "none";
+    }
+  }
+
+  // Optional: show user info if you want
+  const userInfoDiv = document.getElementById("userInfo");
+  if (userInfoDiv) {
+    userInfoDiv.innerHTML = `
+      <strong>${user.name}</strong><br>
+      ${user.email}
+    `;
+  }
+</script>
+
+
+
+<script>
+// Load profile from localStorage
+function loadProfile() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) {
+    const nameEl = document.getElementById("sidebarUserName");
+    const picEl = document.getElementById("sidebarUserPic");
+
+    if (nameEl) nameEl.innerText = user.name || "No Name";
+    if (picEl) picEl.src = user.picture || "https://placehold.co/80x80";
+  }
+}
+
+// Refresh from server
+async function refreshUserFromDB() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !user.email) return;
+
+  try {
+    const res = await fetch(`/api/user/by-email/${user.email}`);
+    if (!res.ok) throw new Error("User not found");
+    const updatedUser = await res.json();
+
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    loadProfile();
+  } catch (err) {
+    console.error("Failed to refresh user:", err);
+  }
+}
+
+// Call once page loads
+document.addEventListener("DOMContentLoaded", () => {
+  loadProfile(); // ✅ correct function name
+  refreshUserFromDB();
+});
+</script>
+<script>
+    function updateUserInLocalStorage(updatedUser) {
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      loadProfileFromLocalStorage(); // Refresh sidebar profile after update
+    }
+  </script>
+  <script>
+window.addEventListener("DOMContentLoaded", () => {
+  fetch("/api/user")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.name) {
+        const userInput = document.getElementById("userName");
+        userInput.value = data.name;
+        userInput.readOnly = true;
+      }
+    })
+    .catch((err) => console.error("Not logged in:", err));
+});
+</script>
+<script>
+  const groupCodeInput = document.getElementById("groupCode");
+
+  groupCodeInput.addEventListener("input", () => {
+    const code = groupCodeInput.value;
+
+    // Rules
+    const lengthValid = code.length === 6;
+    const upperValid = /[A-Z]/.test(code);
+    const numValid = /[0-9]/.test(code);
+    const specialValid = /[@#$%&]/.test(code);
+
+    // Update rule UI
+    document.getElementById("lengthRule").innerText = (lengthValid ? "🟢" : "🔴") + " Must be exactly 6 characters";
+    document.getElementById("upperRule").innerText = (upperValid ? "🟢" : "🔴") + "1 uppercase letter (A-Z)";
+    document.getElementById("numRule").innerText = (numValid ? "🟢" : "🔴") + "1 number (0-9)";
+    document.getElementById("specialRule").innerText = (specialValid ? "🟢" : "🔴") + " At least 1 special char (@#$%&)";
+
+    // Save valid state (for join button)
+    groupCodeInput.dataset.valid =
+      lengthValid && upperValid && numValid && specialValid ? "true" : "false";
+  });
+</script>
+<script>
+const navButtons = document.querySelectorAll('.nav-btn');
+const star = document.querySelector('.shooting-star');
+const container = document.querySelector('.btn-container');
+
+let currentX = 0; 
+let targetX = 0; 
+let isMoving = false;
+let sparkTimer;
+
+function animateStar() {
+  if (Math.abs(targetX - currentX) > 0.5) {
+    currentX += (targetX - currentX) * 0.15;
+    star.style.transform = `translateX(${currentX}px)`;
+
+    // Show comet style while moving
+    star.classList.add('active');
+    emitSparks(currentX + star.offsetWidth / 2, 5);
+
+    requestAnimationFrame(animateStar);
+  } else {
+    isMoving = false;
+    currentX = targetX;
+    star.style.transform = `translateX(${currentX}px)`;
+
+    // Delay removing comet style (so it fades nicely)
+    clearTimeout(sparkTimer);
+    sparkTimer = setTimeout(() => {
+      star.classList.remove('active'); // back to white underline
+    }, 150);
+  }
+}
+
+function emitSparks(x, count) {
+  for (let i = 0; i < count; i++) {
+    const spark = document.createElement('span');
+    spark.className = 'spark';
+    container.appendChild(spark);
+
+    const angle = Math.random() * Math.PI * 2;
+    const distance = Math.random() * 35 + 10;
+    const dx = Math.cos(angle) * distance + "px";
+    const dy = Math.sin(angle) * distance + "px";
+
+    spark.style.setProperty('--dx', dx);
+    spark.style.setProperty('--dy', dy);
+
+    spark.style.left = `${x}px`;
+    spark.style.top = `${container.offsetHeight - 6}px`;
+
+    setTimeout(() => spark.remove(), 600);
+  }
+}
+
+function moveStar(el) {
+  const rect = el.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+
+  star.style.width = `${rect.width + 15}px`;
+  targetX = rect.left - containerRect.left - 8;
+
+  if (!isMoving) {
+    isMoving = true;
+    requestAnimationFrame(animateStar);
+  }
+}
+
+navButtons.forEach(btn => {
+  btn.addEventListener('mouseenter', () => moveStar(btn));
+  btn.addEventListener('click', () => {
+    navButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    moveStar(btn);
+  });
+});
+
+container.addEventListener('mouseleave', () => {
+  const activeBtn = document.querySelector('.nav-btn.active');
+  if (activeBtn) moveStar(activeBtn);
+});
+
+window.addEventListener('load', () => {
+  const activeBtn = document.querySelector('.nav-btn.active');
+  if (activeBtn) moveStar(activeBtn);
+});
+
+window.addEventListener('resize', () => {
+  const activeBtn = document.querySelector('.nav-btn.active');
+  if (activeBtn) moveStar(activeBtn);
+});
+
+</script>
+<script>
+document.getElementById('menuToggle').addEventListener('click', function () {
+  document.getElementById('menuItems').classList.toggle('show');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced Whiteboard</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    #toolbar {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(240, 240, 240, 0.95);
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      gap: 10px;
+      z-index: 1000;
+      flex-wrap: wrap;
+    }
+    canvas {
+      touch-action: none;
+      cursor: crosshair;
+    }
+    button, label {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toolbar">
+    <label>✏️ <input type="color" id="colorPicker" value="#000000"></label>
+    <label>🖊️ <input type="range" id="sizePicker" min="1" max="30" value="5"></label>
+    <button id="penBtn">Pen</button>
+    <button id="eraserBtn">Eraser</button>
+    <button id="highlightBtn">Highlighter</button>
+    <button id="textBtn">Text</button>
+    <button id="lineBtn">Line</button>
+    <button id="rectBtn">Rectangle</button>
+    <button id="circleBtn">Circle</button>
+    <input type="file" id="imageUpload" accept="image/*">
+    <button id="undoBtn">Undo</button>
+    <button id="exportBtn">Export</button>
+    <button id="clearBtn">Clear</button>
+  </div>
+
+  <canvas id="whiteboardCanvas"></canvas>
+
+  <!-- ✅ Only keep these two scripts in this exact order -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="wb.js"></script>
+
+</body>
+</html>
